@@ -40,7 +40,8 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/view/"):]
 	p, err := loadPage(title)
 	if err != nil {
-		log.Fatal(err)
+		http.Redirect(w, r, "/edit/"+title, http.StatusFound)
+		return
 	}
 	renderTemplate(w, "view", p)
 }
@@ -62,8 +63,8 @@ func main() {
 	// p2, _ := loadPage("TestPage")
 	// println(string(p2.Body))
 	http.HandleFunc("/view/", viewHandler)
-	http.HandleFunc("/edit/", viewHandler)
-	http.HandleFunc("/save/", viewHandler)
+	http.HandleFunc("/edit/", editHandler)
+	// http.HandleFunc("/save/", viewHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
